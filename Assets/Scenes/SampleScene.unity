@@ -710,6 +710,7 @@ MonoBehaviour:
     type: 3}
   leafPrefab: {fileID: 2402590111641154489, guid: 824cef458bedf1b4da207000a71d8f47,
     type: 3}
+  stemLength: 0.5
 --- !u!1 &843372169
 GameObject:
   m_ObjectHideFlags: 0
@@ -1065,7 +1066,7 @@ Transform:
   m_GameObject: {fileID: 1327212439}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -5, z: 0}
-  m_LocalScale: {x: 75, y: 20, z: 1}
+  m_LocalScale: {x: 75, y: 21, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
