@@ -15,4 +15,9 @@ public class TreeLimb : MonoBehaviour
 	{
 		lineRenderer.SetPosition(1, extent);
 	}
+
+	public void SetVisible(bool value)
+	{
+		lineRenderer.enabled = value;
+	}
 }

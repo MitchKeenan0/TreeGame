@@ -7,31 +7,45 @@ public class Droplet : MonoBehaviour
 	public float lifeTime = 5f;
 	public bool bActive = false;
 
-	private SpriteRenderer spriteRenderer;
+	private SpriteRenderer sprite;
+	private TrailRenderer trail;
 	private IEnumerator lifetimeCoroutine;
+	private IEnumerator resetCoroutine;
 	private Energy energy;
+	private bool bResetting = false;
 
     void Awake()
     {
 		energy = FindObjectOfType<Energy>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
+		sprite = GetComponentInChildren<SpriteRenderer>();
+		trail = GetComponentInChildren<TrailRenderer>();
 		lifetimeCoroutine = Lifetime();
 		StartCoroutine(lifetimeCoroutine);
     }
 
 	public void SetVisualEnabled(bool value)
 	{
-		spriteRenderer.enabled = value;
+		sprite.enabled = value;
+		trail.Clear();
 		if (value)
 		{
 			lifetimeCoroutine = Lifetime();
 			StartCoroutine(lifetimeCoroutine);
+			bResetting = false;
 		}
 	}
 
 	private IEnumerator Lifetime()
 	{
 		yield return new WaitForSeconds(lifeTime);
+		bActive = false;
+		SetVisualEnabled(false);
+	}
+
+	private IEnumerator ResetDelay()
+	{
+		bResetting = true;
+		yield return new WaitForSeconds(0.5f);
 		bActive = false;
 		SetVisualEnabled(false);
 	}
@@ -44,10 +58,13 @@ public class Droplet : MonoBehaviour
 			Leaf leaf = collision.gameObject.GetComponent<Leaf>();
 			if (leaf != null)
 				energy.LeafEnergy(1, transform.position);
-
-			StopAllCoroutines();
-			bActive = false;
-			SetVisualEnabled(false);
+			
+			if (!bResetting)
+			{
+				StopAllCoroutines();
+				resetCoroutine = ResetDelay();
+				StartCoroutine(resetCoroutine);
+			}
 		}
 	}
 }
