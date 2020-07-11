@@ -25,7 +25,7 @@ public class TreeSystem : MonoBehaviour
 		GameObject stem = Instantiate(limbPrefab, transform);
 		TreeLimb tl = stem.GetComponent<TreeLimb>();
 		Vector3 stemVector = (transform.up * stemLength);
-		tl.SetLimbLine(stemVector);
+		tl.SetLimbLine(transform.position, stemVector);
 		limbList.Add(tl);
 		GameObject leaf = Instantiate(leafPrefab, stem.transform);
 		leaf.transform.position = transform.position + stemVector;

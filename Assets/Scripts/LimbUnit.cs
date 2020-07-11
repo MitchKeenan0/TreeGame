@@ -8,13 +8,14 @@ public class LimbUnit : MonoBehaviour
 	public bool bActive = false;
 	public bool bTargeting = false;
 
-	private TreeLimb limbPrototype;
-	private Camera cam;
+	private TreeLimb limbPrototype = null;
+	private TreeLimb targetLimb = null;
+	private Camera cam = null;
 
     void Start()
     {
 		cam = Camera.main;
-		limbPrototype = Instantiate(limbPrefab, transform);
+		limbPrototype = Instantiate(limbPrefab, null);
 		limbPrototype.SetVisible(false);
     }
 
@@ -30,20 +31,28 @@ public class LimbUnit : MonoBehaviour
 
 	void CheckOverlap()
 	{
-		Ray ray = cam.ScreenPointToRay(Input.GetTouch(0).position);
-		Debug.DrawRay(ray.origin, ray.direction * 11f, Color.yellow, 1f);
-
-		bTargeting = false;
-		RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction * 12f);
-		if (hits.Length > 0)
+		if (Input.touchCount > 0)
 		{
-			foreach (RaycastHit2D hit in hits)
+			Ray ray = cam.ScreenPointToRay(Input.GetTouch(0).position);
+			Debug.DrawRay(ray.origin, ray.direction * 11f, Color.yellow, 1f);
+
+			bTargeting = false;
+			RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction * 12f);
+			if (hits.Length > 0)
 			{
-				if (hit.collider.gameObject.GetComponent<TreeLimb>())
+				foreach (RaycastHit2D hit in hits)
 				{
-					bTargeting = true;
-					break;
+					if (hit.collider.gameObject.GetComponent<TreeLimb>())
+					{
+						targetLimb = hit.collider.gameObject.GetComponent<TreeLimb>();
+						bTargeting = true;
+						break;
+					}
 				}
+			}
+			else
+			{
+				targetLimb = null;
 			}
 		}
 	}
@@ -51,7 +60,11 @@ public class LimbUnit : MonoBehaviour
 	void TargetLimb()
 	{
 		limbPrototype.SetVisible(true);
-		limbPrototype.SetLimbLine(Vector3.up);
+		Vector3 limbPosition = cam.ScreenToWorldPoint(transform.position);
+		limbPosition.z = 0;
+		Vector3 limbDirection = limbPosition + (limbPosition - (targetLimb.transform.position));
+		limbPrototype.transform.rotation = Quaternion.LookRotation(limbDirection);
+		limbPrototype.SetLimbLine(limbPosition, Vector3.up);
 	}
 
 	public void SetActive(bool value)

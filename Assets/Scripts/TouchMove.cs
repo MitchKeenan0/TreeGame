@@ -65,8 +65,6 @@ public class TouchMove : MonoBehaviour
 		bMoving = false;
 
 		bool bLanded = false;
-		if (GetComponent<LimbUnit>())
-			GetComponent<LimbUnit>().SetActive(false);
 		if (GetComponent<LimbUnit>().bTargeting)
 			bLanded = true;
 		if (!bLanded)
