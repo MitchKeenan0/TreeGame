@@ -17,6 +17,7 @@ public class LimbUnit : MonoBehaviour
 		cam = Camera.main;
 		limbPrototype = Instantiate(limbPrefab, null);
 		limbPrototype.SetVisible(false);
+		limbPrototype.SetColliderEnabled(false);
     }
 
     void Update()
@@ -34,8 +35,6 @@ public class LimbUnit : MonoBehaviour
 		if (Input.touchCount > 0)
 		{
 			Ray ray = cam.ScreenPointToRay(Input.GetTouch(0).position);
-			Debug.DrawRay(ray.origin, ray.direction * 11f, Color.yellow, 1f);
-
 			bTargeting = false;
 			RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction * 12f);
 			if (hits.Length > 0)
@@ -59,16 +58,24 @@ public class LimbUnit : MonoBehaviour
 
 	void TargetLimb()
 	{
-		limbPrototype.SetVisible(true);
 		Vector3 limbPosition = cam.ScreenToWorldPoint(transform.position);
 		limbPosition.z = 0;
-		Vector3 limbDirection = limbPosition + (limbPosition - (targetLimb.transform.position));
-		limbPrototype.transform.rotation = Quaternion.LookRotation(limbDirection);
-		limbPrototype.SetLimbLine(limbPosition, Vector3.up);
+		Vector3 sproutPosition = targetLimb.GetClosestBoundsPoints(limbPosition);
+		Vector3 limbDirection = (limbPosition - targetLimb.GetLimbCentre()).normalized;
+
+		limbPrototype.transform.rotation = Quaternion.Lerp(limbPrototype.transform.rotation, Quaternion.LookRotation(Vector3.forward, limbDirection), 10*Time.deltaTime);
+		limbPrototype.SetLimbLine(sproutPosition, transform.up);
+		limbPrototype.SetVisible(true);
 	}
 
 	public void SetActive(bool value)
 	{
 		bActive = value;
+	}
+
+	public void Spend()
+	{
+		limbPrototype.SetColliderEnabled(true);
+		Destroy(gameObject);
 	}
 }

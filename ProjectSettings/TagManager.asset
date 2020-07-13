@@ -13,14 +13,14 @@ TagManager:
   - UI
   - 
   - 
+  - Tree
   - 
   - 
   - 
   - 
   - 
   - 
-  - 
-  - 
+  - Sunbeam
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Sunbeam
+    uniqueID: 837706149
+    locked: 0
+  - name: Tree
+    uniqueID: 654252463
     locked: 0

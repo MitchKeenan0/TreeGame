@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2804913662886522709}
   - component: {fileID: 2804913662886522710}
   m_Layer: 0
-  m_Name: SunlightPrecipitation
+  m_Name: Precipitation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,7 +50,6 @@ MonoBehaviour:
   initialStartDelay: 1
   precipitFallRate: 10
   fallSpeed: 10
-  fallDirection: {x: 0, y: 0}
 --- !u!1 &2804913664172947905
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ GameObject:
   - component: {fileID: 2804913664172947907}
   - component: {fileID: 2804913664172947906}
   m_Layer: 0
-  m_Name: SunBeam
+  m_Name: AlignTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -17,7 +17,7 @@ public class Energy : MonoBehaviour
 	public void LeafEnergy(int value, Vector3 position)
 	{
 		currentEnergy += value;
-		energyUI.PopEnergy(currentEnergy, position);
+		energyUI.PopEnergy(value, currentEnergy, position);
 		upgradeUI.UpdateTotalEnergy(value);
 	}
 }

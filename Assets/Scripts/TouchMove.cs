@@ -69,5 +69,7 @@ public class TouchMove : MonoBehaviour
 			bLanded = true;
 		if (!bLanded)
 			bReturning = true;
+		if (bLanded)
+			GetComponent<LimbUnit>().Spend();
 	}
 }

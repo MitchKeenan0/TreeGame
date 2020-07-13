@@ -24,11 +24,10 @@ public class TreeSystem : MonoBehaviour
 		// new tree
 		GameObject stem = Instantiate(limbPrefab, transform);
 		TreeLimb tl = stem.GetComponent<TreeLimb>();
-		Vector3 stemVector = (transform.up * stemLength);
-		tl.SetLimbLine(transform.position, stemVector);
+		tl.SetLimbLine(transform.position, transform.up);
 		limbList.Add(tl);
 		GameObject leaf = Instantiate(leafPrefab, stem.transform);
-		leaf.transform.position = transform.position + stemVector;
+		leaf.transform.position = transform.position + transform.up;
 		Leaf lf = leaf.GetComponent<Leaf>();
 		leafList.Add(lf);
 	}

@@ -21,12 +21,12 @@ public class EnergyGameUI : MonoBehaviour
 		}
 	}
 
-	public void PopEnergy(int value, Vector3 position)
+	public void PopEnergy(int value, int total, Vector3 position)
 	{
-		energyValueText.text = value.ToString();
+		energyValueText.text = total.ToString();
 		PopUI pop = GetListedPop();
 		pop.gameObject.SetActive(true);
-		pop.PopIt(1, position);
+		pop.PopIt(value, position);
 	}
 
 	PopUI GetListedPop()

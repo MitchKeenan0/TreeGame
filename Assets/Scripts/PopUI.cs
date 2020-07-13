@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PopUI : MonoBehaviour
 {
 	public Text valueText;
+	public Text backingText;
 	public float lifetime = 1f;
 	public bool bActive = false;
 
@@ -23,6 +24,7 @@ public class PopUI : MonoBehaviour
 	{
 		bActive = true;
 		valueText.text = "+" + value.ToString();
+		backingText.text = valueText.text;
 		Vector3 popScreenPos = cameraMain.WorldToScreenPoint(position);
 		popScreenPos.z = 0;
 		transform.position = popScreenPos;

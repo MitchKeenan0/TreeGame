@@ -7,9 +7,8 @@ public class Precipitation : MonoBehaviour
 	public Transform internalBeamTransform;
 	public Droplet precipitPrefab;
 	public float initialStartDelay = 1f;
-	public float precipitFallRate = 30f;
+	public float precipitFallRate = 5f;
 	public float fallSpeed = 10f;
-	public Vector2 fallDirection = Vector2.zero;
 
 	private List<Droplet> precipList;
 	private float timeLastDrop = 0f;
@@ -25,18 +24,19 @@ public class Precipitation : MonoBehaviour
 		{
 			Droplet nextDrop = GetListedDroplet();
 			ResetDroplet(nextDrop);
+			timeLastDrop = Time.timeSinceLevelLoad;
 		}
     }
 
 	void ResetDroplet(Droplet dp)
 	{
 		Vector3 dropletPosition = Vector3.zero;
-		dropletPosition += internalBeamTransform.right * -10f;
+		//dropletPosition += internalBeamTransform.right * -10f;
 		dropletPosition += internalBeamTransform.up * Random.Range(-5f, 5f);
 		dp.transform.position = dropletPosition;
-		dp.GetComponent<Rigidbody2D>().velocity = internalBeamTransform.transform.right * precipitFallRate;
+		dp.GetComponent<Rigidbody2D>().velocity = internalBeamTransform.transform.right * fallSpeed;
 		dp.bActive = true;
-		dp.SetVisualEnabled(true);
+		dp.SetDropletEnabled(true);
 	}
 
 	Droplet GetListedDroplet()

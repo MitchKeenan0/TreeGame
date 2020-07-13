@@ -5,10 +5,12 @@ using UnityEngine;
 public class Droplet : MonoBehaviour
 {
 	public float lifeTime = 5f;
+	public bool bLifetime = false;
 	public bool bActive = false;
 
 	private SpriteRenderer sprite;
 	private TrailRenderer trail;
+	private Collider2D col;
 	private IEnumerator lifetimeCoroutine;
 	private IEnumerator resetCoroutine;
 	private Energy energy;
@@ -19,27 +21,47 @@ public class Droplet : MonoBehaviour
 		energy = FindObjectOfType<Energy>();
 		sprite = GetComponentInChildren<SpriteRenderer>();
 		trail = GetComponentInChildren<TrailRenderer>();
-		lifetimeCoroutine = Lifetime();
-		StartCoroutine(lifetimeCoroutine);
-    }
-
-	public void SetVisualEnabled(bool value)
-	{
-		sprite.enabled = value;
-		trail.Clear();
-		if (value)
+		col = GetComponent<Collider2D>();
+		col.enabled = false;
+		if (bLifetime)
 		{
 			lifetimeCoroutine = Lifetime();
 			StartCoroutine(lifetimeCoroutine);
+		}
+    }
+
+	public void SetDropletEnabled(bool value)
+	{
+		if (sprite != null)
+			sprite.enabled = value;
+		if (trail != null)
+			trail.Clear();
+		if (value)
+		{
+			if (bLifetime)
+			{
+				lifetimeCoroutine = Lifetime();
+				StartCoroutine(lifetimeCoroutine);
+			}
 			bResetting = false;
 		}
+		if (GetComponent<Sunbeam>())
+			GetComponent<Sunbeam>().SetActive(value);
+		col.enabled = value;
+	}
+
+	public void Cancel()
+	{
+		bActive = false;
+		SetDropletEnabled(false);
+		StopAllCoroutines();
 	}
 
 	private IEnumerator Lifetime()
 	{
 		yield return new WaitForSeconds(lifeTime);
 		bActive = false;
-		SetVisualEnabled(false);
+		SetDropletEnabled(false);
 	}
 
 	private IEnumerator ResetDelay()
@@ -47,12 +69,12 @@ public class Droplet : MonoBehaviour
 		bResetting = true;
 		yield return new WaitForSeconds(0.5f);
 		bActive = false;
-		SetVisualEnabled(false);
+		SetDropletEnabled(false);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (!collision.gameObject.GetComponent<Droplet>())
+		if (bLifetime && !collision.gameObject.GetComponent<Droplet>())
 		{
 			// energy transfer to leaf
 			Leaf leaf = collision.gameObject.GetComponent<Leaf>();
