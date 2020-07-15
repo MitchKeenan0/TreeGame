@@ -8,6 +8,7 @@ public class TreeSystem : MonoBehaviour
 	public GameObject leafPrefab;
 	public float stemLength = 0.5f;
 
+	private Soil soil;
 	private List<TreeLimb> limbList;
 	private List<Leaf> leafList;
 
@@ -20,15 +21,19 @@ public class TreeSystem : MonoBehaviour
 	{
 		limbList = new List<TreeLimb>();
 		leafList = new List<Leaf>();
+		soil = FindObjectOfType<Soil>();
 
-		// new tree
+		// create trunk
 		GameObject stem = Instantiate(limbPrefab, transform);
-		TreeLimb tl = stem.GetComponent<TreeLimb>();
-		tl.SetLimbLine(transform.position, transform.up);
-		limbList.Add(tl);
-		GameObject leaf = Instantiate(leafPrefab, stem.transform);
-		leaf.transform.position = transform.position + transform.up;
-		Leaf lf = leaf.GetComponent<Leaf>();
-		leafList.Add(lf);
+		TreeLimb tLimb = stem.GetComponent<TreeLimb>();
+		tLimb.SetLimbLine(false, transform.position, transform.up * 0.1f);
+		limbList.Add(tLimb);
+		tLimb.SetColliderEnabled(true);
+		tLimb.AttachToRb(soil.GetComponent<Rigidbody2D>());
+
+		PlantPhysics pPhysics = tLimb.GetComponent<PlantPhysics>();
+		pPhysics.SetNaturalDirection(Vector3.up);
+
+		tLimb.ImbueLeaf();
 	}
 }

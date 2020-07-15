@@ -20,7 +20,7 @@ public class LimbUnit : MonoBehaviour
 		limbPrototype.SetColliderEnabled(false);
     }
 
-    void Update()
+    void FixedUpdate()
     {
 		if (bActive)
 		{
@@ -36,6 +36,8 @@ public class LimbUnit : MonoBehaviour
 		{
 			Ray ray = cam.ScreenPointToRay(Input.GetTouch(0).position);
 			bTargeting = false;
+			Vector2 closestVector = new Vector2(999f, 999f);
+			GameObject closestObj = null;
 			RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction * 12f);
 			if (hits.Length > 0)
 			{
@@ -43,11 +45,19 @@ public class LimbUnit : MonoBehaviour
 				{
 					if (hit.collider.gameObject.GetComponent<TreeLimb>())
 					{
-						targetLimb = hit.collider.gameObject.GetComponent<TreeLimb>();
 						bTargeting = true;
-						break;
+						Vector2 myPosition = cam.ScreenToWorldPoint(transform.position);
+						Vector2 toHit = hit.collider.ClosestPoint(myPosition) - myPosition;
+						if (toHit.magnitude < closestVector.magnitude)
+						{
+							closestVector = toHit;
+							closestObj = hit.collider.gameObject;
+						}
 					}
 				}
+
+				if (bTargeting && closestObj != null)
+					targetLimb = closestObj.GetComponent<TreeLimb>();
 			}
 			else
 			{
@@ -64,7 +74,7 @@ public class LimbUnit : MonoBehaviour
 		Vector3 limbDirection = (limbPosition - targetLimb.GetLimbCentre()).normalized;
 
 		limbPrototype.transform.rotation = Quaternion.Lerp(limbPrototype.transform.rotation, Quaternion.LookRotation(Vector3.forward, limbDirection), 10*Time.deltaTime);
-		limbPrototype.SetLimbLine(sproutPosition, transform.up);
+		limbPrototype.SetLimbLine(true, sproutPosition, limbPrototype.transform.up * 0.1f);
 		limbPrototype.SetVisible(true);
 	}
 
@@ -75,7 +85,15 @@ public class LimbUnit : MonoBehaviour
 
 	public void Spend()
 	{
+		limbPrototype.transform.SetParent(targetLimb.transform);
+		limbPrototype.AttachToRb(targetLimb.GetComponent<Rigidbody2D>());
 		limbPrototype.SetColliderEnabled(true);
+
+		PlantPhysics pPhysics = limbPrototype.GetComponent<PlantPhysics>();
+		pPhysics.SetNaturalDirection(limbPrototype.transform.up);
+		limbPrototype.ImbueLeaf();
+
+		bTargeting = false;
 		Destroy(gameObject);
 	}
 }

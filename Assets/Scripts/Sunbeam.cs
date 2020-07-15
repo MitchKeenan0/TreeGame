@@ -10,8 +10,7 @@ public class Sunbeam : MonoBehaviour
 	public float scaleDeviation = 0.5f;
 	public float raycastsPerUnit = 10f;
 	public float startRotationZ = 23f;
-
-	private float timer = 0f;
+	
 	private float actualScaleSpeed = 0f;
 	private float boxColliderLength = 0f;
 	private bool bExtant = true;
@@ -21,11 +20,12 @@ public class Sunbeam : MonoBehaviour
 	private Droplet droplet = null;
 	private IEnumerator lifetimeCoroutine;
 
-    void Start()
+    void Awake()
     {
 		lineRenderer = GetComponent<LineRenderer>();
 		boxCollider = GetComponent<BoxCollider2D>();
 		boxColliderLength = boxCollider.size.y;
+		boxCollider.enabled = false;
 		droplet = GetComponent<Droplet>();
 		lineRenderer.widthMultiplier = 0f;
 		actualScaleSpeed = Random.Range(scaleSpeed - scaleDeviation, scaleSpeed + scaleDeviation);
@@ -77,5 +77,7 @@ public class Sunbeam : MonoBehaviour
 		bExtant = value;
 		if (!value)
 			AdjustRotation();
+		if (boxCollider != null)
+			boxCollider.enabled = value;
 	}
 }

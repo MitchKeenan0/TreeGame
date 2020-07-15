@@ -8,14 +8,19 @@ public class Leaf : MonoBehaviour
 	public float circleCastScale = 0.2f;
 
 	private ParticleSystem sunParticles;
+	private HingeJoint2D joint;
 	private Energy energy;
 	private bool bSunlit = false;
+	private bool bParticles = false;
 	private float timeLastEnergy = 0f;
+	private float sunlightTime = 0f;
 
     void Start()
     {
 		sunParticles = GetComponentInChildren<ParticleSystem>();
-		SetParticles(false);
+		joint = GetComponent<HingeJoint2D>();
+		var em = sunParticles.emission;
+		em.enabled = false;
 		energy = FindObjectOfType<Energy>();
     }
 	
@@ -44,17 +49,35 @@ public class Leaf : MonoBehaviour
 
 	void UpdateSunlightEnergy()
 	{
-		if (Time.timeSinceLevelLoad >= (timeLastEnergy + (1f / sunlightEnergyRate)))
+		sunlightTime += Time.deltaTime;
+		if (sunlightTime >= (1f / sunlightEnergyRate))
 		{
 			Vector3 uiPosition = new Vector3(Random.Range(-circleCastScale, circleCastScale), Random.Range(-circleCastScale, circleCastScale), 0f);
-			energy.LeafEnergy(10, transform.position + uiPosition);
+			energy.LeafEnergy(1, transform.position + uiPosition);
 			timeLastEnergy = Time.timeSinceLevelLoad;
+			sunlightTime = 0f;
 		}
 	}
 
 	void SetParticles(bool bEnabled)
 	{
 		var em = sunParticles.emission;
-		em.enabled = bEnabled;
+		if (bEnabled && !bParticles)
+		{
+			em.enabled = true;
+			bParticles = true;
+		}
+		else if (bParticles)
+		{
+			em.enabled = false;
+			bParticles = false;
+		}
+	}
+
+	public void ConnectToRb(Rigidbody2D rb)
+	{
+		if (!joint)
+			joint = GetComponent<HingeJoint2D>();
+		joint.connectedBody = rb;
 	}
 }

@@ -30,7 +30,7 @@ public class Precipitation : MonoBehaviour
 
 	void ResetDroplet(Droplet dp)
 	{
-		Vector3 dropletPosition = Vector3.zero;
+		Vector3 dropletPosition = internalBeamTransform.position;
 		//dropletPosition += internalBeamTransform.right * -10f;
 		dropletPosition += internalBeamTransform.up * Random.Range(-5f, 5f);
 		dp.transform.position = dropletPosition;

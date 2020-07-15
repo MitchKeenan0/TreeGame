@@ -12,6 +12,7 @@ public class Energy : MonoBehaviour
 	{
 		energyUI = FindObjectOfType<EnergyGameUI>();
 		upgradeUI = FindObjectOfType<UpgradeUI>();
+		LeafEnergy(1, new Vector3(Screen.width * 2f, Screen.height * 2f, 0f));
 	}
 
 	public void LeafEnergy(int value, Vector3 position)
