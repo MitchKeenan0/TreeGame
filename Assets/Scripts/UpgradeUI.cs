@@ -73,6 +73,15 @@ public class UpgradeUI : MonoBehaviour
 
 	public void BranchUpgrade()
 	{
+		TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
+		foreach (TreeLimb tl in limbs)
+			tl.SetGrowTargetLength(1.6f);
+	}
 
+	public void WidthUpgrade()
+	{
+		TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
+		foreach (TreeLimb tl in limbs)
+			tl.SetGrowTargetWidth(1.6f);
 	}
 }

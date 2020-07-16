@@ -13,8 +13,10 @@ public class TreeLimb : MonoBehaviour
 	private BoxCollider2D[] boxColliders;
 	private Vector3 limbExtent = Vector3.zero;
 	private float sproutLength = 0.1f;
-	private float matureLength = 1f;
 	private float growDistance = 0.1f;
+	private float growWidth = 0.1f;
+	private float growTargetLength = 1f;
+	private float growTargetWidth = 0.2f;
 	private float growTime = 0f;
 	private float boxLength = 0f;
 	private bool bAlive = false;
@@ -28,27 +30,47 @@ public class TreeLimb : MonoBehaviour
 		boxLength = boxColliders[0].size.x;
 		leafList = new List<Leaf>();
 		FindObjectOfType<Wind>().AddRb(rb);
+		limbRender.GetComponent<MeshRenderer>().sortingLayerName = "Tree";
+		limbRender.GetComponent<MeshRenderer>().sortingOrder = 0;
 	}
 
 	void Update()
 	{
 		if (bAlive)
 		{
-			if (growDistance < 1f)
+			float delta = Time.deltaTime * growSpeed;
+			if (growDistance < growTargetLength)
 			{
-				float delta = Time.deltaTime * growSpeed;
 				growTime += delta;
-				growDistance = Mathf.Lerp(sproutLength, matureLength, growTime);
+				growDistance = Mathf.Lerp(growDistance, growTargetLength, Time.deltaTime);
+				growDistance = Mathf.Clamp(growDistance, 0.1f, growTargetLength);
 				SetLimbLine(false, transform.position, (transform.up * growDistance));
+				if (growDistance == growTargetLength)
+					sproutLength = growDistance;
+			}
+			if (growWidth < growTargetWidth)
+			{
+				growWidth = Mathf.Lerp(growWidth, growTargetWidth, Time.deltaTime);
+				growWidth = Mathf.Clamp(growWidth, 0.1f, growTargetWidth);
+				SetLimbWidth(growWidth);
+				PlantPhysics physics = GetComponent<PlantPhysics>();
+				physics.SetForceScale(growWidth);
 			}
 		}
 	}
 
+	void SetLimbWidth(float value)
+	{
+		Vector2 renderSize = limbRender.transform.localScale;
+		Vector2 growthVector = renderSize;
+		growthVector.x *= value;
+		limbRender.localScale = growthVector;
+	}
+
 	public void SetLimbLine(bool bSetLimbOrigin, Vector3 origin, Vector3 extent)
 	{
-		//if (bSetLimbOrigin)
+		if(bSetLimbOrigin)
 			transform.position = origin;
-
 		limbExtent = origin + extent;
 
 		Vector2 lineSize = Vector2.zero;
@@ -70,6 +92,17 @@ public class TreeLimb : MonoBehaviour
 			foreach (Leaf lf in leafList)
 				lf.transform.position = limbExtent;
 		}
+	}
+
+	public void SetGrowTargetLength(float value)
+	{
+		growTargetLength *= value;
+		SetGrowTargetWidth(value);
+	}
+
+	public void SetGrowTargetWidth(float value)
+	{
+		growTargetWidth *= value;
 	}
 
 	public void AttachToRb(Rigidbody2D rb)
@@ -119,5 +152,10 @@ public class TreeLimb : MonoBehaviour
 		closePoint.x = closer.x;
 		closePoint.y = closer.y;
 		return closePoint;
+	}
+
+	public float GetLimbLength()
+	{
+		return growTargetLength;
 	}
 }

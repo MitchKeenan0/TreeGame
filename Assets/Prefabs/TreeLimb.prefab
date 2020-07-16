@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2177343838001296012}
   - component: {fileID: 346271889711006669}
   - component: {fileID: 6080877442713870904}
+  - component: {fileID: 6183827580110198281}
   m_Layer: 8
   m_Name: Render
   m_TagString: Untagged
@@ -77,6 +78,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!210 &6183827580110198281
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520012502195133911}
+  m_Enabled: 1
+  m_SortingLayerID: 654252463
+  m_SortingLayer: 2
+  m_SortingOrder: 0
 --- !u!1 &8502806376824542862
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +104,7 @@ GameObject:
   - component: {fileID: 2312181159350657416}
   - component: {fileID: 4658425460320319040}
   - component: {fileID: 4627447915752555254}
+  - component: {fileID: 9098750527755260600}
   m_Layer: 8
   m_Name: TreeLimb
   m_TagString: Untagged
@@ -142,9 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c433f018440fae6478f1ed3a11d4db1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comfortableAngle: 1
-  rigidity: 100
-  spring: 100
+  comfortableAngle: 10
+  breakAngle: 75
+  rigidity: 10
+  spring: 1000
 --- !u!50 &3397480662615747505
 Rigidbody2D:
   serializedVersion: 4
@@ -156,10 +170,10 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 50
-  m_AngularDrag: 50
+  m_UseAutoMass: 1
+  m_Mass: 0.060000002
+  m_LinearDrag: 0
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -242,3 +256,14 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.6}
   m_EdgeRadius: 1
+--- !u!210 &9098750527755260600
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8502806376824542862}
+  m_Enabled: 1
+  m_SortingLayerID: 654252463
+  m_SortingLayer: 2
+  m_SortingOrder: 0

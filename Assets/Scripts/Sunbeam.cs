@@ -30,6 +30,10 @@ public class Sunbeam : MonoBehaviour
 		lineRenderer.widthMultiplier = 0f;
 		actualScaleSpeed = Random.Range(scaleSpeed - scaleDeviation, scaleSpeed + scaleDeviation);
 		AdjustRotation();
+		Vector3 offsetOrigin = lineRenderer.GetPosition(0) + Vector3.forward;
+		Vector3 offsetExtent = lineRenderer.GetPosition(1) + Vector3.forward;
+		lineRenderer.SetPosition(0, offsetOrigin);
+		lineRenderer.SetPosition(1, offsetExtent);
     }
 
 	void Update()
@@ -55,7 +59,8 @@ public class Sunbeam : MonoBehaviour
 				}
 			}
 
-			Vector2 boxSize = new Vector2(lineRenderer.widthMultiplier, boxColliderLength);
+			float boxX = Mathf.Clamp(lineRenderer.widthMultiplier, 0.1f, maxBeamWidth);
+			Vector2 boxSize = new Vector2(boxX, boxColliderLength);
 			boxCollider.size = boxSize;
 		}
 	}

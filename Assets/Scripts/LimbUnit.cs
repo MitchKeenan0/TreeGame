@@ -89,6 +89,9 @@ public class LimbUnit : MonoBehaviour
 		limbPrototype.AttachToRb(targetLimb.GetComponent<Rigidbody2D>());
 		limbPrototype.SetColliderEnabled(true);
 
+		limbPrototype.SetGrowTargetLength(0.6f);
+		targetLimb.SetGrowTargetLength(1.6f);
+
 		PlantPhysics pPhysics = limbPrototype.GetComponent<PlantPhysics>();
 		pPhysics.SetNaturalDirection(limbPrototype.transform.up);
 		limbPrototype.ImbueLeaf();

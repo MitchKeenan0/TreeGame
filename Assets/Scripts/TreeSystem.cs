@@ -26,7 +26,7 @@ public class TreeSystem : MonoBehaviour
 		// create trunk
 		GameObject stem = Instantiate(limbPrefab, transform);
 		TreeLimb tLimb = stem.GetComponent<TreeLimb>();
-		tLimb.SetLimbLine(false, transform.position, transform.up * 0.1f);
+		tLimb.SetLimbLine(false, transform.position, transform.up);
 		limbList.Add(tLimb);
 		tLimb.SetColliderEnabled(true);
 		tLimb.AttachToRb(soil.GetComponent<Rigidbody2D>());

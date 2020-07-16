@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 7989802445290385855}
   - component: {fileID: 7989802445290385852}
   m_Layer: 5
-  m_Name: LeafButton
+  m_Name: WidthButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,7 +257,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7989802445290385855}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7989802446897886337}
+        m_MethodName: WidthUpgrade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &7989802445432016546
@@ -273,7 +284,7 @@ GameObject:
   - component: {fileID: 7989802445432016543}
   - component: {fileID: 7989802445432016540}
   m_Layer: 5
-  m_Name: BranchButton
+  m_Name: LengthButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -380,7 +391,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7989802446897886337}
-        m_MethodName: Branch
+        m_MethodName: BranchUpgrade
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
