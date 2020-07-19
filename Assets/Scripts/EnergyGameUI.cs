@@ -23,27 +23,38 @@ public class EnergyGameUI : MonoBehaviour
 
 	public void PopEnergy(int value, int total, Vector3 position)
 	{
-		energyValueText.text = total.ToString();
+		UpdateScoreText(total);
 		PopUI pop = GetListedPop();
-		pop.gameObject.SetActive(true);
-		pop.PopIt(value, position);
+		if (pop != null)
+		{
+			pop.gameObject.SetActive(true);
+			pop.PopIt(value, position);
+		}
+	}
+
+	public void UpdateScoreText(int value)
+	{
+		energyValueText.text = value.ToString();
 	}
 
 	PopUI GetListedPop()
 	{
 		PopUI pop = null;
-		foreach(PopUI pp in scorePopList)
+		if (scorePopList != null)
 		{
-			if (!pp.bActive)
+			foreach (PopUI pp in scorePopList)
 			{
-				pop = pp;
-				break;
+				if (!pp.bActive)
+				{
+					pop = pp;
+					break;
+				}
 			}
-		}
-		if (pop == null)
-		{
-			PopUI popper = Instantiate(scorePopPrefab, transform);
-			pop = popper;
+			if (pop == null)
+			{
+				PopUI popper = Instantiate(scorePopPrefab, transform);
+				pop = popper;
+			}
 		}
 		return pop;
 	}

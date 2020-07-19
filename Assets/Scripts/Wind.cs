@@ -27,8 +27,12 @@ public class Wind : MonoBehaviour
 		{
 			foreach (Rigidbody2D rb in rbList)
 			{
-				rb.AddForce(windDirection);
-				Debug.DrawLine(rb.transform.position, rb.transform.position + new Vector3(windDirection.x, windDirection.y, 0f));
+				if (rb != null)
+				{
+					float massScale = rb.mass;
+					rb.AddForce(windDirection * massScale);
+					Debug.DrawLine(rb.transform.position, rb.transform.position + new Vector3(windDirection.x, windDirection.y, 0f));
+				}
 			}
 		}
     }
@@ -51,6 +55,9 @@ public class Wind : MonoBehaviour
 
 	public void AddRb(Rigidbody2D rb)
 	{
-		rbList.Add(rb);
+		if (rbList == null)
+			rbList = new List<Rigidbody2D>();
+		if (rbList != null)
+			rbList.Add(rb);
 	}
 }

@@ -14,7 +14,10 @@ public class UpgradeUI : MonoBehaviour
 	public int limbCapacity = 5;
 	public int leafCapacity = 5;
 	public int[] gridScaleCounts;
+	public int lengthUpdatePrice = 1000;
+	public int widthUpgradePrice = 100;
 
+	private Energy energy;
 	private GridLayoutStretch grid;
 	private int gridCellSize = 100;
 	private int scaleIndex = 0;
@@ -24,10 +27,11 @@ public class UpgradeUI : MonoBehaviour
 	private int limbEnergy = 0;
 	private int leafEnergy = 0;
 
-    void Start()
+    void Awake()
     {
 		branchTokenList = new List<GameObject>();
 		grid = GetComponentInChildren<GridLayoutStretch>();
+		energy = FindObjectOfType<Energy>();
     }
 
 	void AddBranchToken()
@@ -66,22 +70,27 @@ public class UpgradeUI : MonoBehaviour
 			else
 				bScaleMax = true;
 		}
-
-		//if ((totalEnergy >= leafEnergy) && (leafs < leafCapacity))
-		//	AddLeafToken();
 	}
 
 	public void BranchUpgrade()
 	{
-		TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
-		foreach (TreeLimb tl in limbs)
-			tl.SetGrowTargetLength(1.6f);
+		if (energy.GetEnergy() >= lengthUpdatePrice)
+		{
+			TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
+			foreach (TreeLimb tl in limbs)
+				tl.SetGrowTargetLength(1.6f);
+			energy.SpendEnergy(lengthUpdatePrice);
+		}
 	}
 
 	public void WidthUpgrade()
 	{
-		TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
-		foreach (TreeLimb tl in limbs)
-			tl.SetGrowTargetWidth(1.6f);
+		if (energy.GetEnergy() >= widthUpgradePrice)
+		{
+			TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
+			foreach (TreeLimb tl in limbs)
+				tl.SetGrowTargetWidth(1.6f);
+			energy.SpendEnergy(widthUpgradePrice);
+		}
 	}
 }

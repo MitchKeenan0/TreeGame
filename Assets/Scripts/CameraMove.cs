@@ -9,6 +9,8 @@ public class CameraMove : MonoBehaviour
 	public float moveSpeed = 1f;
 	public float initialOffset = 5f;
 	public float moveIntervalTime = 1f;
+	public float distanceStep = 1.05f;
+	public float offsetStep = 0.1f;
 
 	private Camera cam = null;
 	private float distance = 0f;
@@ -36,7 +38,6 @@ public class CameraMove : MonoBehaviour
 		camMovePosition.y = offset;
 		cam.orthographicSize = distance;
 		transform.position = camMovePosition;
-
 	}
 
 	private IEnumerator CamMoveInterval(float interval)
@@ -52,8 +53,8 @@ public class CameraMove : MonoBehaviour
 				float leafScreenY = (cam.WorldToScreenPoint(lf.transform.position)).y;
 				if (leafScreenY >= screenMidY)
 				{
-					ScaleTargetDistance(1.05f);
-					ScaleTargetOffset(0.1f);
+					ScaleTargetDistance(distanceStep);
+					ScaleTargetOffset(offsetStep);
 					break;
 				}
 			}
@@ -68,6 +69,5 @@ public class CameraMove : MonoBehaviour
 	public void ScaleTargetOffset(float value)
 	{
 		targetOffset += value;
-		Debug.Log(targetOffset);
 	}
 }

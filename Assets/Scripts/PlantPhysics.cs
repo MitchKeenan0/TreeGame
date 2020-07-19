@@ -27,20 +27,35 @@ public class PlantPhysics : MonoBehaviour
 		{
 			float forceX = Mathf.Clamp((naturalDirection.x - transform.up.x), -1f, 1f);
 			Vector3 torqueVector = (transform.right * forceX) * rigidity * forceScale;
-			forceDirection = Vector3.Lerp(forceDirection, torqueVector, Time.fixedDeltaTime * spring);
+			forceDirection = Vector3.MoveTowards(forceDirection, torqueVector, Time.deltaTime * spring);
 			rb.AddForce(forceDirection);
 			Debug.DrawLine(transform.position, (transform.position + torqueVector), Color.blue);
 		}
 		if (angleToNatural >= breakAngle)
 		{
-			HingeJoint2D joint = GetComponent<HingeJoint2D>();
-			joint.connectedBody = null;
-			joint.enabled = false;
-			transform.SetParent(null);
-			bConnectedToTree = false;
-			GetComponentInChildren<Leaf>().enabled = false;
+			BreakOffTree();
 		}
     }
+
+	void BreakOffTree()
+	{
+		bool gg = false;
+		TreeLimb tLimb = GetComponent<TreeLimb>();
+		if (tLimb.bLifeCritical)
+		{
+			FindObjectOfType<Game>().GameOver();
+			gg = true;
+		}
+
+		HingeJoint2D joint = GetComponent<HingeJoint2D>();
+		joint.connectedBody = null;
+		joint.enabled = false;
+		transform.SetParent(null);
+		bConnectedToTree = false;
+		GetComponentInChildren<Leaf>().enabled = false;
+		if (!gg)
+			Destroy(gameObject, 0.5f);
+	}
 
 	public void SetNaturalDirection(Vector3 value)
 	{
@@ -50,6 +65,6 @@ public class PlantPhysics : MonoBehaviour
 	public void SetForceScale(float value)
 	{
 		forceScale = value;
-		rb.drag = value;
+		rb.drag = value * 100f;
 	}
 }

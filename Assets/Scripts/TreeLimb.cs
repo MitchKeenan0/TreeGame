@@ -7,17 +7,16 @@ public class TreeLimb : MonoBehaviour
 	public Leaf leafPrefab;
 	public Transform limbRender;
 	public float growSpeed = 0.3f;
+	public bool bLifeCritical = false;
 
 	private Rigidbody2D rb;
 	private HingeJoint2D joint;
 	private BoxCollider2D[] boxColliders;
 	private Vector3 limbExtent = Vector3.zero;
-	private float sproutLength = 0.1f;
-	private float growDistance = 0.1f;
-	private float growWidth = 0.1f;
+	private float growDistance = 0f;
+	private float growWidth = 0f;
 	private float growTargetLength = 1f;
-	private float growTargetWidth = 0.2f;
-	private float growTime = 0f;
+	private float growTargetWidth = 1f;
 	private float boxLength = 0f;
 	private bool bAlive = false;
 	private List<Leaf> leafList;
@@ -38,31 +37,26 @@ public class TreeLimb : MonoBehaviour
 	{
 		if (bAlive)
 		{
-			float delta = Time.deltaTime * growSpeed;
-			if (growDistance < growTargetLength)
-			{
-				growTime += delta;
-				growDistance = Mathf.Lerp(growDistance, growTargetLength, Time.deltaTime);
-				growDistance = Mathf.Clamp(growDistance, 0.1f, growTargetLength);
-				SetLimbLine(false, transform.position, (transform.up * growDistance));
-				if (growDistance == growTargetLength)
-					sproutLength = growDistance;
-			}
-			if (growWidth < growTargetWidth)
+			if (growWidth != growTargetWidth)
 			{
 				growWidth = Mathf.Lerp(growWidth, growTargetWidth, Time.deltaTime);
-				growWidth = Mathf.Clamp(growWidth, 0.1f, growTargetWidth);
 				SetLimbWidth(growWidth);
 				PlantPhysics physics = GetComponent<PlantPhysics>();
 				physics.SetForceScale(growWidth);
+			}
+
+			if (growDistance != growTargetLength)
+			{
+				growDistance = Mathf.Lerp(growDistance, growTargetLength, Time.deltaTime);
+				growDistance = Mathf.Clamp(growDistance, 0.1f, growTargetLength);
+				SetLimbLine(false, transform.position, (transform.up * growDistance));
 			}
 		}
 	}
 
 	void SetLimbWidth(float value)
 	{
-		Vector2 renderSize = limbRender.transform.localScale;
-		Vector2 growthVector = renderSize;
+		Vector2 growthVector = limbRender.transform.localScale;
 		growthVector.x *= value;
 		limbRender.localScale = growthVector;
 	}
@@ -77,6 +71,8 @@ public class TreeLimb : MonoBehaviour
 		Vector2 lineOffset = Vector2.zero;
 		float lineLength = Vector3.Distance(origin, limbExtent);
 		lineOffset = new Vector2(0f, (lineLength / 2f));
+
+		boxLength = Mathf.Clamp(growWidth, 0.01f, growTargetWidth);
 		lineSize = new Vector2(boxLength, lineLength);
 		foreach (BoxCollider2D box in boxColliders)
 		{
@@ -97,11 +93,11 @@ public class TreeLimb : MonoBehaviour
 	public void SetGrowTargetLength(float value)
 	{
 		growTargetLength *= value;
-		SetGrowTargetWidth(value);
 	}
 
 	public void SetGrowTargetWidth(float value)
 	{
+		Debug.Log(growTargetWidth + " *= " + value);
 		growTargetWidth *= value;
 	}
 
@@ -114,8 +110,6 @@ public class TreeLimb : MonoBehaviour
 	{
 		Leaf leafObj = Instantiate(leafPrefab, transform);
 		leafObj.transform.position = limbExtent;
-		Vector3 leafEulers = new Vector3(0f, 0f, Random.Range(-50f, 50f));
-		leafObj.transform.rotation = Quaternion.Euler(leafEulers);
 		leafList.Add(leafObj);
 		leafObj.ConnectToRb(rb);
 		FindObjectOfType<Wind>().AddRb(leafObj.GetComponent<Rigidbody2D>());
