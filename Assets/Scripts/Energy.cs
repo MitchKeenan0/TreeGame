@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Energy : MonoBehaviour
 {
+	public bool bPlayer = true;
 	private EnergyGameUI energyUI;
 	private UpgradeUI upgradeUI;
 	private int currentEnergy = 0;
@@ -21,7 +22,8 @@ public class Energy : MonoBehaviour
 	{
 		currentEnergy += value;
 		energyUI.PopEnergy(value, currentEnergy, position);
-		upgradeUI.UpdateTotalEnergy(value);
+		if (bPlayer)
+			upgradeUI.UpdateTotalEnergy(value);
 	}
 
 	public void SpendEnergy(int value)

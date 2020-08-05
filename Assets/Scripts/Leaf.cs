@@ -7,6 +7,7 @@ public class Leaf : MonoBehaviour
 	public float sunlightEnergyRate = 0.333f;
 	public float circleCastScale = 0.2f;
 
+	private SpriteRenderer spriteRender;
 	private ParticleSystem sunParticles;
 	private HingeJoint2D joint;
 	private Energy energy;
@@ -14,37 +15,44 @@ public class Leaf : MonoBehaviour
 	private bool bParticles = false;
 	private float timeLastEnergy = 0f;
 	private float sunlightTime = 0f;
+	private bool bPlayerLeaf = false;
 
     void Start()
     {
+		spriteRender = GetComponentInChildren<SpriteRenderer>();
 		sunParticles = GetComponentInChildren<ParticleSystem>();
 		joint = GetComponent<HingeJoint2D>();
 		var em = sunParticles.emission;
 		em.enabled = false;
-		energy = FindObjectOfType<Energy>();
+		energy = transform.root.GetComponent<Energy>();
+		if (transform.root.GetComponent<Player>())
+			bPlayerLeaf = true;
     }
 	
     void Update()
     {
-		bSunlit = false;
-		RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, circleCastScale, Vector3.forward);
-		if (hits.Length > 0)
+		if (bPlayerLeaf)
 		{
-			for(int i = 0; i < hits.Length; i++)
+			bSunlit = false;
+			RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, circleCastScale, Vector3.forward);
+			if (hits.Length > 0)
 			{
-				RaycastHit2D hit = hits[i];
-				if (hit.collider.gameObject.GetComponent<Sunbeam>())
+				for (int i = 0; i < hits.Length; i++)
 				{
-					bSunlit = true;
-					break;
+					RaycastHit2D hit = hits[i];
+					if (hit.collider.gameObject.GetComponent<Sunbeam>())
+					{
+						bSunlit = true;
+						break;
+					}
 				}
 			}
+
+			SetParticles(bSunlit);
+
+			if (bSunlit)
+				UpdateSunlightEnergy();
 		}
-
-		SetParticles(bSunlit);
-
-		if (bSunlit)
-			UpdateSunlightEnergy();
     }
 
 	void UpdateSunlightEnergy()
@@ -79,5 +87,18 @@ public class Leaf : MonoBehaviour
 		if (!joint)
 			joint = GetComponent<HingeJoint2D>();
 		joint.connectedBody = rb;
+		if (rb.transform.root.GetComponent<Player>() == null)
+			SetColorScale(0.62f);
+	}
+
+	public void SetColorScale(float value)
+	{
+		if (!spriteRender)
+			spriteRender = GetComponentInChildren<SpriteRenderer>();
+		Color c = spriteRender.material.color;
+		c.r *= value;
+		c.g *= value;
+		c.b *= value;
+		spriteRender.material.color = c;
 	}
 }

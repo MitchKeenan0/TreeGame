@@ -12,6 +12,7 @@ public class TreeLimb : MonoBehaviour
 	private Rigidbody2D rb;
 	private HingeJoint2D joint;
 	private BoxCollider2D[] boxColliders;
+	private MeshRenderer meshRender;
 	private Vector3 limbExtent = Vector3.zero;
 	private float growDistance = 0f;
 	private float growWidth = 0f;
@@ -26,11 +27,13 @@ public class TreeLimb : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		joint = GetComponent<HingeJoint2D>();
 		boxColliders = GetComponents<BoxCollider2D>();
+		meshRender = GetComponentInChildren<MeshRenderer>();
 		boxLength = boxColliders[0].size.x;
 		leafList = new List<Leaf>();
 		FindObjectOfType<Wind>().AddRb(rb);
 		limbRender.GetComponent<MeshRenderer>().sortingLayerName = "Tree";
 		limbRender.GetComponent<MeshRenderer>().sortingOrder = 0;
+		SetVisible(false);
 	}
 
 	void Update()
@@ -48,9 +51,11 @@ public class TreeLimb : MonoBehaviour
 			if (growDistance != growTargetLength)
 			{
 				growDistance = Mathf.Lerp(growDistance, growTargetLength, Time.deltaTime);
-				growDistance = Mathf.Clamp(growDistance, 0.1f, growTargetLength);
+				growDistance = Mathf.Clamp(growDistance, 0f, growTargetLength);
 				SetLimbLine(false, transform.position, (transform.up * growDistance));
 			}
+
+			SetVisible(true);
 		}
 	}
 
@@ -97,13 +102,27 @@ public class TreeLimb : MonoBehaviour
 
 	public void SetGrowTargetWidth(float value)
 	{
-		Debug.Log(growTargetWidth + " *= " + value);
+		///Debug.Log(growTargetWidth + " *= " + value);
 		growTargetWidth *= value;
 	}
 
 	public void AttachToRb(Rigidbody2D rb)
 	{
 		joint.connectedBody = rb;
+	}
+
+	public void ParentalGrowth(float lengthScale, float widthScale)
+	{
+		if (transform.parent != null)
+		{
+			TreeLimb parentLimb = transform.parent.GetComponent<TreeLimb>();
+			if (parentLimb != null)
+			{
+				parentLimb.SetGrowTargetLength(lengthScale);
+				parentLimb.SetGrowTargetWidth(widthScale);
+				parentLimb.ParentalGrowth(lengthScale, widthScale);
+			}
+		}
 	}
 
 	public void ImbueLeaf()
@@ -113,8 +132,8 @@ public class TreeLimb : MonoBehaviour
 		leafList.Add(leafObj);
 		leafObj.ConnectToRb(rb);
 		FindObjectOfType<Wind>().AddRb(leafObj.GetComponent<Rigidbody2D>());
-		PlantPhysics pPhysics = leafObj.GetComponent<PlantPhysics>();
-		pPhysics.SetNaturalDirection(leafObj.transform.up);
+		if (transform.root.GetComponent<Player>() == null)
+			SetColorScale(0.62f);
 	}
 
 	public void SetVisible(bool value)
@@ -151,5 +170,16 @@ public class TreeLimb : MonoBehaviour
 	public float GetLimbLength()
 	{
 		return growTargetLength;
+	}
+
+	public void SetColorScale(float value)
+	{
+		if (!meshRender)
+			meshRender = GetComponentInChildren<MeshRenderer>();
+		Color c = meshRender.material.color;
+		c.r *= value;
+		c.g *= value;
+		c.b *= value;
+		meshRender.material.color = c;
 	}
 }

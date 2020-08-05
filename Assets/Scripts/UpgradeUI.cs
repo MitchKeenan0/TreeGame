@@ -17,7 +17,7 @@ public class UpgradeUI : MonoBehaviour
 	public int lengthUpdatePrice = 1000;
 	public int widthUpgradePrice = 100;
 
-	private Energy energy;
+	private Energy playerEnergy;
 	private GridLayoutStretch grid;
 	private int gridCellSize = 100;
 	private int scaleIndex = 0;
@@ -31,7 +31,7 @@ public class UpgradeUI : MonoBehaviour
     {
 		branchTokenList = new List<GameObject>();
 		grid = GetComponentInChildren<GridLayoutStretch>();
-		energy = FindObjectOfType<Energy>();
+		playerEnergy = FindObjectOfType<Player>().GetComponent<Energy>();
     }
 
 	void AddBranchToken()
@@ -74,23 +74,28 @@ public class UpgradeUI : MonoBehaviour
 
 	public void BranchUpgrade()
 	{
-		if (energy.GetEnergy() >= lengthUpdatePrice)
+		if (playerEnergy.GetEnergy() >= lengthUpdatePrice)
 		{
 			TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
 			foreach (TreeLimb tl in limbs)
 				tl.SetGrowTargetLength(1.6f);
-			energy.SpendEnergy(lengthUpdatePrice);
+			playerEnergy.SpendEnergy(lengthUpdatePrice);
 		}
+		UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
 	}
 
 	public void WidthUpgrade()
 	{
-		if (energy.GetEnergy() >= widthUpgradePrice)
+		if (playerEnergy.GetEnergy() >= widthUpgradePrice)
 		{
 			TreeLimb[] limbs = FindObjectsOfType<TreeLimb>();
 			foreach (TreeLimb tl in limbs)
-				tl.SetGrowTargetWidth(1.6f);
-			energy.SpendEnergy(widthUpgradePrice);
+				tl.SetGrowTargetWidth(1.15f);
+			PlantPhysics[] phys = FindObjectsOfType<PlantPhysics>();
+			foreach (PlantPhysics ph in phys)
+				ph.ScaleForceValue(1.15f);
+			playerEnergy.SpendEnergy(widthUpgradePrice);
 		}
+		UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
 	}
 }

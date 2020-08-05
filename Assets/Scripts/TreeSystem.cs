@@ -27,11 +27,14 @@ public class TreeSystem : MonoBehaviour
 		GameObject stem = Instantiate(limbPrefab, transform);
 		TreeLimb tLimb = stem.GetComponent<TreeLimb>();
 		tLimb.SetLimbLine(false, transform.position, transform.up * 0.1f);
-		tLimb.SetGrowTargetLength(0.5f);
-		tLimb.SetGrowTargetWidth(0.05f);
+		tLimb.SetGrowTargetLength(0.3f);
+		tLimb.SetGrowTargetWidth(0.02f);
 		limbList.Add(tLimb);
 		tLimb.SetColliderEnabled(true);
 		tLimb.AttachToRb(soil.GetComponent<Rigidbody2D>());
+
+		PlantPhysics pp = stem.GetComponent<PlantPhysics>();
+		pp.SetComfortableAngle(3f);
 
 		PlantPhysics pPhysics = tLimb.GetComponent<PlantPhysics>();
 		pPhysics.SetNaturalDirection(Vector3.up);

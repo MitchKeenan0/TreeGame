@@ -7,6 +7,7 @@ public class Droplet : MonoBehaviour
 	public float lifeTime = 5f;
 	public bool bLifetime = false;
 	public bool bActive = false;
+	public ParticleSystem impactParticles;
 
 	private SpriteRenderer sprite;
 	private TrailRenderer trail;
@@ -20,7 +21,7 @@ public class Droplet : MonoBehaviour
 
     void Awake()
     {
-		energy = FindObjectOfType<Energy>();
+		//energy = FindObjectOfType<Energy>();
 		sprite = GetComponentInChildren<SpriteRenderer>();
 		trail = GetComponentInChildren<TrailRenderer>();
 		if (trail != null)
@@ -107,8 +108,14 @@ public class Droplet : MonoBehaviour
 				leaf = collision.gameObject.GetComponentInParent<Leaf>();
 			if (leaf != null)
 			{
-				energy.LeafEnergy(10, transform.position);
-				GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+				if (leaf.transform.root.GetComponent<Player>())
+				{
+					energy = leaf.transform.root.GetComponent<Energy>();
+					energy.LeafEnergy(10, transform.position);
+					GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+					impactParticles.Play();
+				}
+				col.enabled = false;
 			}
 			
 			if (!bResetting)
